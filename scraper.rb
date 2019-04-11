@@ -37,10 +37,12 @@ class MemberItem < Scraped::HTML
   end
 
   field :area do
+    return 'reserved seat for Women' if womens?
     tds[2].text.tidy
   end
 
   field :area_id do
+    return 'Q59390111' if womens?
     tds[2].xpath('.//a/@wikidata').text
   end
 
@@ -56,6 +58,10 @@ class MemberItem < Scraped::HTML
 
   def tds
     noko.css('td')
+  end
+
+  def womens?
+    noko.xpath('.//preceding::h3').last.text.downcase.include? 'women members'
   end
 end
 
